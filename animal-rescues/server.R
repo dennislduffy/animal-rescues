@@ -8,19 +8,28 @@
 #
 
 library(shiny)
+library(tidyverse)
+library(leaflet)
+library(tidytuesdayR)
 
-# Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+#read in data for the week
+tuesdata <- tidytuesdayR::tt_load('2021-06-29')
 
-    output$distPlot <- renderPlot({
+animal_rescues <- tuesdata$animal_rescues
 
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+server <- function(input, output, session) {
 
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  #Create a map indicating site of animal rescues
+  output$mymap <- renderLeaflet({
+    animal_rescues%>%
+      mutate(lng = as.numeric(longitude), 
+             lat = as.numeric(latitude)) %>%
+      filter(cal_year == "2010", 
+             animal_group_parent == "Bird") %>%
+      leaflet() %>%
+      addTiles() %>%
+      addMarkers(lng = ~lng, lat = ~lat)
+  })
 
-    })
+}
 
-})
