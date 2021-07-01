@@ -17,6 +17,17 @@ tuesdata <- tidytuesdayR::tt_load('2021-06-29')
 
 animal_rescues <- tuesdata$animal_rescues
 
+#Clean up animal names
+animal_rescues$animal_group_parent <- animal_rescues$animal_group_parent %>%
+  str_replace("cat", "Cat") %>%
+  str_replace("Budgie", "Bird")
+  
+#Locate unknown animals and condense to unknown
+x <- str_detect(animal_rescues$animal_group_parent, "Unknown")
+
+animal_rescues$animal_group_parent <- replace(animal_rescues$animal_group_parent, x, "Unknown")
+
+
 server <- function(input, output, session) {
 
   #Create a map indicating site of animal rescues

@@ -12,5 +12,14 @@ library(leaflet)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  leafletOutput("mymap")
+  titlePanel("London Animal Rescues"), 
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("animal", "Animal", choice = sort(animal_rescues$animal_group_parent))
+    ),
+    mainPanel(
+      leafletOutput("mymap")
+      )
+  ),
+  
 )
