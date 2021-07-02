@@ -27,6 +27,7 @@ x <- str_detect(animal_rescues$animal_group_parent, "Unknown")
 
 animal_rescues$animal_group_parent <- replace(animal_rescues$animal_group_parent, x, "Unknown")
 
+#create animal list
 
 server <- function(input, output, session) {
 
@@ -38,9 +39,21 @@ server <- function(input, output, session) {
       mutate(lng = as.numeric(longitude), 
              lat = as.numeric(latitude)) %>%
       leaflet() %>%
+      setView(lng = -.102, lat = 51.52, zoom = 9) %>%
       addTiles() %>%
       addMarkers(lng = ~lng, lat = ~lat)
   })
-
+  
+  animal_list <- reactive({
+    x <- arrange(animal_rescues, animal_group_parent)
+    unique(as.list(x$animal_group_parent))
+  })
+  
+  output$animal <- renderUI({
+    selectInput("animal", "Select an animal", choices = animal_list(), selected = "Bird")
+  })
+  
 }
+
+
 
