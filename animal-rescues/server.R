@@ -13,10 +13,10 @@ library(leaflet)
 library(tidytuesdayR)
 
 #read in data for the week
-tuesdata <- tidytuesdayR::tt_load('2021-06-29')
+#tuesdata <- tidytuesdayR::tt_load('2021-06-29')
 
-animal_rescues <- tuesdata$animal_rescues
-
+#animal_rescues <- tuesdata$animal_rescues
+animal_rescues <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-06-29/animal_rescues.csv')
 #Clean up animal names
 animal_rescues$animal_group_parent <- animal_rescues$animal_group_parent %>%
   str_replace("cat", "Cat") %>%
@@ -41,7 +41,9 @@ server <- function(input, output, session) {
       leaflet() %>%
       setView(lng = -.102, lat = 51.52, zoom = 9) %>%
       addTiles() %>%
-      addMarkers(lng = ~lng, lat = ~lat)
+      addCircleMarkers(lng = ~lng, lat = ~lat, 
+                       radius = 3, 
+                       label = animal_rescues$special_service_type)
   })
   
   animal_list <- reactive({
