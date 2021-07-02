@@ -33,10 +33,10 @@ server <- function(input, output, session) {
   #Create a map indicating site of animal rescues
   output$mymap <- renderLeaflet({
     animal_rescues%>%
+      filter(animal_group_parent == input$animal, 
+             cal_year == input$year) %>%
       mutate(lng = as.numeric(longitude), 
              lat = as.numeric(latitude)) %>%
-      filter(cal_year == "2010", 
-             animal_group_parent == "Bird") %>%
       leaflet() %>%
       addTiles() %>%
       addMarkers(lng = ~lng, lat = ~lat)

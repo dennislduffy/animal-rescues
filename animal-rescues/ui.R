@@ -15,7 +15,8 @@ ui <- fluidPage(
   titlePanel("London Animal Rescues"), 
   sidebarLayout(
     sidebarPanel(
-      selectInput("animal", "Animal", choice = sort(animal_rescues$animal_group_parent))
+      selectInput("animal", "Select an animal", choice = sort(animal_rescues$animal_group_parent), selected = "Bird"), #come back and fix the selected argument
+      selectInput("year", "Select a year", choice = animal_rescues$cal_year)
     ),
     mainPanel(
       leafletOutput("mymap")
