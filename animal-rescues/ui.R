@@ -29,5 +29,4 @@ ui <- fluidPage(
       leafletOutput("mymap", height = 600)
       )
   ),
-  
 )
