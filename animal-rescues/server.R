@@ -18,7 +18,7 @@ library(tidytuesdayR)
 #animal_rescues <- tuesdata$animal_rescues
 animal_rescues <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-06-29/animal_rescues.csv')
 #Clean up animal names
-animal_rescues$animal_group_parent <- animal_rescues$animal_group_parent %>%
+animal_rescues$animal_group_parent_test <- animal_rescues$animal_group_parent %>%
   str_replace("cat", "Cat") %>%
   str_replace("Budgie", "Bird")
   
@@ -27,13 +27,12 @@ x <- str_detect(animal_rescues$animal_group_parent, "Unknown")
 
 animal_rescues$animal_group_parent <- replace(animal_rescues$animal_group_parent, x, "Unknown")
 
-#create animal list
 
 server <- function(input, output, session) {
-
+  
   #Create a map indicating site of animal rescues
   output$mymap <- renderLeaflet({
-    animal_rescues%>%
+    animal_rescues %>%
       filter(animal_group_parent == input$animal, 
              cal_year == input$year) %>%
       mutate(lng = as.numeric(longitude), 
@@ -43,18 +42,10 @@ server <- function(input, output, session) {
       addTiles() %>%
       addCircleMarkers(lng = ~lng, lat = ~lat, 
                        radius = 3, 
-                       label = animal_rescues$special_service_type)
+                       label = ~special_service_type)
   })
   
-  animal_list <- reactive({
-    x <- arrange(animal_rescues, animal_group_parent)
-    unique(as.list(x$animal_group_parent))
-  })
-  
-  output$animal <- renderUI({
-    selectInput("animal", "Select an animal", choices = animal_list(), selected = "Bird")
-  })
-  
+
 }
 
 
